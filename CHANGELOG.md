@@ -1,3 +1,19 @@
+## [0.2.8] - 2026-02-19
+
+### Summary
+
+feat(docs): configuration management system
+
+### Docs
+
+- docs: update README
+
+### Other
+
+- update getv.gif
+- update getv.webm
+
+
 ## [0.2.7] - 2026-02-19
 
 ### Summary

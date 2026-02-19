@@ -10,11 +10,39 @@ Read, write, encrypt, and delegate environment variables across services and dev
 
 ![img.png](img.png)
 
+Copy to the clipboard and run `getv grab` to detect and save the API key 
+
+```bash
+$ getv grab
+
+Detected:  groq (GROQ_API_KEY)
+Key:       gsk_Y1xV...TNpA
+Source:    Prefix match
+Domain:    console.groq.com
+Category:  llm
+Profile:   ~/.getv/llm/groq.env
+
+Saved to /home/tom/.getv/llm/groq.env
+
+Usage:
+  getv get llm groq GROQ_API_KEY
+  getv exec llm groq -- python app.py
+```
+without any plugins, managers, or integrations...
+
+Clipboard → .env Auto-Detection
+No other CLI tool has this feature. 
+Copy any API key and run getv grab — it auto-detects the provider, saves to the right profile, and shows usage commands. Perfect for rapid RPi + LLM development workflow.
+
 ```bash
 $ getv grab              # copy API key → auto-detect provider → save
 $ getv exec llm groq -- python app.py   # run with profile injected
 $ getv ssh rpi3 "uname -a"              # SSH using stored profile
 ```
+
+![getv.gif](getv.gif)
+
+
 
 ## Why getv?
 
@@ -150,8 +178,8 @@ pytest  # 190 tests
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE) for details.
+Apache License 2.0 - see [LICENSE](LICENSE) for details.
 
 ## Author
 
-Created by **Tom Sapletta** — [tom@sapletta.com](mailto:tom@sapletta.com)
+Created by **Tom Sapletta** - [tom@sapletta.com](mailto:tom@sapletta.com)
