@@ -9,7 +9,7 @@ from getv.profile import ProfileManager
 from getv.security import mask_value, is_sensitive_key
 from getv.app_defaults import AppDefaults
 
-__version__ = "0.2.2"
+__version__ = "0.2.3"
 
 __all__ = [
     "EnvStore",

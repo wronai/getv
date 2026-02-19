@@ -9,6 +9,18 @@ from getv.store import EnvStore
 from getv.security import mask_dict
 
 
+class ProfileValidationError(ValueError):
+    """Raised when a profile fails required_keys validation."""
+
+    def __init__(self, category: str, name: str, missing: List[str]) -> None:
+        self.category = category
+        self.name = name
+        self.missing = missing
+        super().__init__(
+            f"Profile {category}/{name} missing required keys: {', '.join(missing)}"
+        )
+
+
 class ProfileManager:
     """
     Manages collections of .env profiles organized in directories.
@@ -84,13 +96,29 @@ class ProfileManager:
         store = self.get(category, name)
         return store.as_dict() if store else {}
 
-    def set(self, category: str, name: str, data: Dict[str, str]) -> EnvStore:
-        """Create or update a profile."""
+    def set(self, category: str, name: str, data: Dict[str, str],
+            validate: bool = False) -> EnvStore:
+        """Create or update a profile.
+
+        Args:
+            validate: If True, enforce required_keys for this category.
+                      Raises ProfileValidationError on missing keys.
+        """
+        if validate:
+            missing = self.validate(category, data)
+            if missing:
+                raise ProfileValidationError(category, name, missing)
         path = self._profile_path(category, name)
         store = EnvStore(path)
         store.update(data)
         store.save()
         return store
+
+    def validate(self, category: str, data: Dict[str, str]) -> List[str]:
+        """Check data against required_keys for category. Returns list of missing keys."""
+        cat_info = self._categories.get(category, {})
+        required = cat_info.get("required_keys", [])
+        return [k for k in required if k not in data or not data[k]]
 
     def delete(self, category: str, name: str) -> bool:
         """Delete a profile. Returns True if it existed."""
@@ -166,6 +194,32 @@ class ProfileManager:
             if store.get(key) == value:
                 matches.append(name)
         return matches
+
+    # ── Diff / Copy ────────────────────────────────────────────────────
+
+    def diff(self, category: str, name_a: str, name_b: str) -> Dict[str, Tuple[Optional[str], Optional[str]]]:
+        """Compare two profiles. Returns {key: (value_a, value_b)} for differing keys.
+
+        Keys present only in A have value_b=None, and vice versa.
+        """
+        a = self.get_dict(category, name_a)
+        b = self.get_dict(category, name_b)
+        all_keys = sorted(set(a) | set(b))
+        result: Dict[str, Tuple[Optional[str], Optional[str]]] = {}
+        for k in all_keys:
+            va, vb = a.get(k), b.get(k)
+            if va != vb:
+                result[k] = (va, vb)
+        return result
+
+    def copy(self, src_category: str, src_name: str,
+             dst_category: str, dst_name: str) -> EnvStore:
+        """Clone a profile. Destination is overwritten if it exists."""
+        data = self.get_dict(src_category, src_name)
+        if not data:
+            raise FileNotFoundError(f"Source profile not found: {src_category}/{src_name}")
+        self.add_category(dst_category)
+        return self.set(dst_category, dst_name, data)
 
     # ── Display helpers ──────────────────────────────────────────────────
 

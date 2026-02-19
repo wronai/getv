@@ -1,3 +1,18 @@
+## [0.2.3] - 2026-02-19
+
+### Summary
+
+fix(docs): configuration management system
+
+### Docs
+
+- docs: update TODO.md
+
+### Other
+
+- update getv/profile.py
+
+
 ## [0.2.2] - 2026-02-19
 
 ### Summary
