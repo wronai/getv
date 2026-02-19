@@ -8,6 +8,23 @@
 
 Read, write, encrypt, and delegate environment variables across services and devices.
 
+![img.png](img.png)
+```bash
+$ getv grab
+Detected:  groq (GROQ_API_KEY)
+Key:       gsk_Y1xV...TNpA
+Source:    Prefix match
+Domain:    console.groq.com
+Category:  llm
+Profile:   ~/.getv/llm/groq.env
+
+Saved to /home/tom/.getv/llm/groq.env
+
+Usage:
+  getv get llm groq GROQ_API_KEY
+  getv exec llm groq -- python app.py
+```
+
 ## 📑 Table of Contents
 
 - [Why getv?](#why-getv)
@@ -464,6 +481,10 @@ original = decrypt_store(encrypted, key)
 | `getv ssh PROFILE [CMD]` | SSH to device from profile |
 | `getv curl PROFILE URL` | Authenticated API call |
 | `getv grab [--dry-run]` | Auto-detect API key from clipboard and save |
+| `getv diff CATEGORY A B` | Compare two profiles |
+| `getv copy CAT/SRC CAT/DST` | Clone a profile (cross-category OK) |
+| `getv import FILE [CAT PROFILE]` | Import from .env or docker-compose.yml |
+| `getv init` | Interactive setup wizard |
 
 ## Examples
 
@@ -505,7 +526,7 @@ git clone https://github.com/wronai/getv.git
 cd getv
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-pytest  # 128 tests
+pytest  # 176 tests
 ```
 
 ## License
