@@ -45,4 +45,5 @@
 
 ### Implementation
 
-- [ ] zaimplementować we wszyztskich projektach we wronai/* które używają liteLLM
+- [ ] 
+- 

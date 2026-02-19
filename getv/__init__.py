@@ -8,7 +8,7 @@ from getv.store import EnvStore
 from getv.profile import ProfileManager
 from getv.security import mask_value, is_sensitive_key
 
-__version__ = "0.1.1"
+__version__ = "0.1.2"
 
 __all__ = [
     "EnvStore",

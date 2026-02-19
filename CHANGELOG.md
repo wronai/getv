@@ -1,3 +1,14 @@
+## [0.1.2] - 2026-02-19
+
+### Summary
+
+docs(docs): configuration management system
+
+### Docs
+
+- docs: update TODO.md
+
+
 ## [0.1.1] - 2026-02-19
 
 ### Summary
