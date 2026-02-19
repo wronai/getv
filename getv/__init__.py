@@ -8,6 +8,7 @@ from getv.store import EnvStore
 from getv.profile import ProfileManager, ProfileValidationError
 from getv.security import mask_value, is_sensitive_key
 from getv.app_defaults import AppDefaults
+from getv.watcher import EnvWatcher
 
 __version__ = "0.2.7"
 
@@ -16,6 +17,7 @@ __all__ = [
     "ProfileManager",
     "ProfileValidationError",
     "AppDefaults",
+    "EnvWatcher",
     "mask_value",
     "is_sensitive_key",
 ]

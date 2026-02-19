@@ -465,7 +465,9 @@ getv exec llm groq -- python -c "import os; print(os.environ['GROQ_API_KEY'][:10
 ```
 
 **Problem:** Pythonowy skrypt potrzebuje klucza API, ale nie chcesz przekazywać go jako argument.
+
 **Rozwiązanie:** Wstrzyknij profil do środowiska, Python czyta z `os.environ`.
+
 **Wynik:** Skrypt widzi klucz bezpiecznie przechowywany w getv.
 
 ---
@@ -477,7 +479,9 @@ docker run --env-file <(getv export llm groq) python:3 python -c "import os; pri
 ```
 
 **Problem:** Docker wymaga pliku `.env` ale nie chcesz tworzyć go ręcznie.
+
 **Rozwiązanie:** Process substitution tworzy tymczasowy plik env na podstawie profilu getv.
+
 **Wynik:** Kontener otrzymuje zmienne z profilu bez pliku na dysku.
 
 ---
@@ -489,7 +493,9 @@ getv export llm groq > ~/.env.local && source ~/.env.local
 ```
 
 **Problem:** Masz istniejący projekt który wymaga `.env` i chcesz użyć profilu getv.
+
 **Rozwiązanie:** Export do standardowego formatu .env, następnie źródłujemy do powłoki.
+
 **Wynik:** Wszystkie zmienne z profilu są dostępne w powłoce.
 
 ---
@@ -537,7 +543,9 @@ getv exec llm ollama -- ollama run llama3 "hello"
 ```
 
 **Problem:** Ollama na zdalnym serwerze wymaga konfiguracji adresu i modelu.
+
 **Rozwiązanie:** Profil zawiera `OLLAMA_API_BASE` i `OLLAMA_MODEL`, exec je wstrzykuje.
+
 **Wynik:** Ollama łączy się ze zdalnym serwerem zamiast localhost.
 
 ---
@@ -549,7 +557,9 @@ getv ssh devices rpi3 "uptime"
 ```
 
 **Problem:** SSH do urządzenia IoT, musisz pamiętać adres, użytkownika, port.
+
 **Rozwiązanie:** Profil getv przechowuje wszystko, `getv ssh` automatycznie łączy.
+
 **Wynik:** Zdalne polecenie wykonane bez ręcznego wpisywania parametrów.
 
 ---
@@ -561,7 +571,9 @@ getv exec devices rpi3 -- rsync -av /src/ rpi:/dest/
 ```
 
 **Problem:** Rsync wymaga hosta, użytkownika - chcesz użyć profilu.
+
 **Rozwiązanie:** Profil definiuje RPI_HOST i RPI_USER, rsync używa ich przez zmienne lub alias.
+
 **Wynik:** Synchronizacja plików ze zdalnym urządzeniem.
 
 ---
@@ -573,7 +585,9 @@ getv import llm newprovider < .env
 ```
 
 **Problem:** Masz istniejący plik .env i chcesz zaimportować do getv.
+
 **Rozwiązanie:** `getv import` parsuje .env i zapisuje do profilu.
+
 **Wynik:** Nowy profil `llm/newprovider` z wszystkimi zmiennymi.
 
 ---
@@ -585,7 +599,9 @@ watch -n 5 'getv get llm groq GROQ_API_KEY'
 ```
 
 **Problem:** Chcesz sprawdzić czy klucz się nie zmienił (np. po rotacji).
+
 **Rozwiązanie:** Watch periodycznie odpytuje getv.
+
 **Wynik:** Co 5 sekund wyświetla aktualną wartość klucza.
 
 ---
@@ -597,7 +613,9 @@ getv get llm groq GROQ_API_KEY | pbcopy
 ```
 
 **Problem:** Chcesz skopiować klucz do schowka ręcznie.
+
 **Rozwiązanie:** Pipe wyjścia do `pbcopy` (macOS).
+
 **Wynik:** Klucz w schowku gotowy do wklejenia.
 
 ---
@@ -609,7 +627,9 @@ cat <(getv export llm groq) <(getv export cloud aws) > combined.env
 ```
 
 **Problem:** Potrzebujesz zmienne z wielu profili w jednym pliku.
+
 **Rozwiązanie:** Process substitution łączy wyjście dwóch profilów.
+
 **Wynik:** Plik combined.env ze zmiennymi z obu profili.
 
 ---
@@ -621,7 +641,9 @@ getv list llm --show-secrets | grep -E '^[A-Z_]+='
 ```
 
 **Problem:** Chcesz zobaczyć wszystkie zmienne w kategori LLM.
+
 **Rozwiązanie:** List z maskowaniem, filtruj grepem.
+
 **Wynik:** Czysta lista KEY=VALUE bez格式化owania.
 
 ---
@@ -633,7 +655,9 @@ getv exec llm openai -- https GET https://api.openai.com/v1/models
 ```
 
 **Problem:** Wolisz httpie od curl dla lepszego formatowania.
+
 **Rozwiązanie:** httpie automatycznie czyta zmienne środowiskowe.
+
 **Wynik:** Ładnie sformatowane API response.
 
 ---
@@ -645,7 +669,9 @@ getv exec llm groq -- curl -s -w "\nHTTP: %{http_code}\n" https://api.groq.com/v
 ```
 
 **Problem:** Chcesz szybko sprawdzić czy klucz działa.
+
 **Rozwiązanie:** curl z flagą `-w` pokazuje kod HTTP.
+
 **Wynik:** Widzisz czy autentykacja przeszła (200) czy nie (401).
 
 ---
@@ -657,7 +683,9 @@ getv exec llm groq -- curl -s -w "\nHTTP: %{http_code}\n" https://api.groq.com/v
 ```
 
 **Problem:** Cron potrzebuje zmiennych środowiskowych.
+
 **Rozwiązanie:** Dodaj do crontab polecenie ładujące profil przed uruchomieniem.
+
 **Wynik:** Cron job z dostępem do klucza API.
 
 ---
@@ -669,7 +697,9 @@ getv export llm groq --format shell | bash -x
 ```
 
 **Problem:** Chcesz zobaczyć co dokładnie exportuje profil.
+
 **Rozwiązanie:** Uruchom export jako skrypt z debug mode.
+
 **Wynik:** Widzisz każde polecenie export i jego efekt.
 
 ## Security
