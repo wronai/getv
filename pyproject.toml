@@ -1,0 +1,63 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "getv"
+version = "0.1.1"
+description = "Universal .env variable manager — read, write, encrypt, delegate across services and devices"
+readme = "README.md"
+license = "Apache-2.0"
+requires-python = ">=3.9"
+authors = [
+    {name = "Tom Sapletta", email = "tom@sapletta.com"},
+]
+keywords = ["env", "dotenv", "config", "secrets", "encryption", "profiles", "cli"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: System Administrators",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+]
+dependencies = [
+    "python-dotenv>=1.0.0",
+]
+
+[project.optional-dependencies]
+crypto = [
+    "cryptography>=41.0",
+]
+cli = [
+    "click>=8.0",
+]
+pydantic = [
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+]
+all = [
+    "cryptography>=41.0",
+    "click>=8.0",
+    "pydantic>=2.0",
+    "pydantic-settings>=2.0",
+]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+]
+
+[project.scripts]
+getv = "getv.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["getv*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
