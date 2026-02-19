@@ -16,6 +16,7 @@ Read, write, encrypt, and delegate environment variables across services and dev
 - [Profile Directory Structure](#profile-directory-structure)
 - [App Defaults](#app-defaults)
 - [Integrations](#integrations)
+- [Grab — Clipboard API Key Detection](#grab--clipboard-api-key-detection)
 - [One-liner Examples](#one-liner-examples)
 - [Security](#security)
 - [Format Export](#format-export)
@@ -47,7 +48,7 @@ pip install "getv[pydantic]"       # + pydantic BaseSettings export
 pip install "getv[all]"            # everything
 ```
 
-**v0.2.0** — New integrations, app defaults, and 8 examples
+**v0.2.1** — New: `getv grab` (clipboard API key auto-detection), integrations, app defaults, 9 examples
 
 ## Quick Start
 
@@ -303,6 +304,71 @@ getv exec devices rpi3 -- ansible-playbook deploy.yml
 eval $(getv export llm groq --format shell)
 ```
 
+## Grab — Clipboard API Key Detection
+
+Copy an API key → run `getv grab` → auto-detected, saved.
+
+```bash
+# 1. Copy API key from console.groq.com (Ctrl+C)
+# 2. Run:
+getv grab
+
+# Output:
+# Detected:  groq (GROQ_API_KEY)
+# Key:       gsk_abc1...9jkl
+# Source:    Prefix match
+# Domain:    console.groq.com
+# Category:  llm
+# Profile:   ~/.getv/llm/groq.env
+# Saved to /home/user/.getv/llm/groq.env
+
+# Options:
+getv grab --dry-run           # detect only, don't save
+getv grab --category api      # override category
+getv grab --provider myname   # override provider name
+getv grab --no-browser        # skip browser history check
+```
+
+### Supported prefixes (auto-detected)
+
+| Prefix | Provider | Env Var | Category |
+|--------|----------|---------|----------|
+| `sk-ant-` | Anthropic | `ANTHROPIC_API_KEY` | llm |
+| `sk-or-` | OpenRouter | `OPENROUTER_API_KEY` | llm |
+| `sk-` / `sk-proj-` | OpenAI | `OPENAI_API_KEY` | llm |
+| `gsk_` | Groq | `GROQ_API_KEY` | llm |
+| `key-` | Mistral | `MISTRAL_API_KEY` | llm |
+| `xai-` | xAI | `XAI_API_KEY` | llm |
+| `pplx-` | Perplexity | `PERPLEXITY_API_KEY` | llm |
+| `nvapi-` | NVIDIA | `NVIDIA_API_KEY` | llm |
+| `hf_` | HuggingFace | `HF_API_KEY` | llm |
+| `r8_` | Replicate | `REPLICATE_API_TOKEN` | llm |
+| `ghp_` | GitHub | `GITHUB_TOKEN` | tokens |
+| `glpat-` | GitLab | `GITLAB_TOKEN` | tokens |
+| `AKIA` | AWS | `AWS_ACCESS_KEY_ID` | cloud |
+| `dop_v1_` | DigitalOcean | `DIGITALOCEAN_TOKEN` | cloud |
+| `tskey-` | Tailscale | `TAILSCALE_API_KEY` | tokens |
+| `SG.` | SendGrid | `SENDGRID_API_KEY` | email |
+| `sk_live_` / `sk_test_` | Stripe | `STRIPE_API_KEY` | payments |
+
+### Detection priority
+
+1. **Key prefix** — covers ~90% of cases (instant)
+2. **Browser history** — Chrome/Firefox SQLite (last 10 min)
+3. **User prompt** — fallback
+
+```python
+# Python API
+from getv.integrations.clipboard import ClipboardGrab
+
+grab = ClipboardGrab()
+result = grab.detect()  # reads clipboard, returns GrabResult or None
+
+if result:
+    print(result.provider, result.env_var)
+    result.save()  # writes to ~/.getv/llm/groq.env
+```
+
 ## One-liner Examples
 
 ### Popular API Tokens
@@ -397,6 +463,7 @@ original = decrypt_store(encrypted, key)
 | `getv defaults [APP]` | Show app defaults |
 | `getv ssh PROFILE [CMD]` | SSH to device from profile |
 | `getv curl PROFILE URL` | Authenticated API call |
+| `getv grab [--dry-run]` | Auto-detect API key from clipboard and save |
 
 ## Examples
 
@@ -412,6 +479,7 @@ See `examples/` directory:
 | `06_app_defaults.py` | Per-app default profiles |
 | `07_pipe_and_shell.sh` | Shell integration & pipes |
 | `08_pydantic_settings.py` | Pydantic Settings bridge |
+| `09_grab_api_key.py` | Clipboard API key auto-detection |
 
 ## Environment Variables
 
@@ -437,7 +505,7 @@ git clone https://github.com/wronai/getv.git
 cd getv
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev]"
-pytest  # 84 tests
+pytest  # 128 tests
 ```
 
 ## License
