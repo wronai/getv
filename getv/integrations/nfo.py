@@ -64,10 +64,10 @@ def patch_nfo_redaction(visible_chars: int = 4) -> bool:
                 result[key] = value
         return result
 
-    # Patch nfo.redact module
-    nfo_redact.is_sensitive_key = _combined_is_sensitive
-    nfo_redact.redact_value = _getv_redact_value
-    nfo_redact.redact_kwargs = _getv_redact_kwargs
+    # Force replacement by updating the module's __dict__ directly
+    nfo_redact.__dict__['is_sensitive_key'] = _combined_is_sensitive
+    nfo_redact.__dict__['redact_value'] = _getv_redact_value
+    nfo_redact.__dict__['redact_kwargs'] = _getv_redact_kwargs
 
     return True
 

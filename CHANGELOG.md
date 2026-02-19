@@ -1,3 +1,22 @@
+## [0.2.7] - 2026-02-19
+
+### Summary
+
+fix: resolve test failures and improve error handling
+
+### Docs
+
+- docs: update README
+
+### Test
+
+- update tests/test_nfo_integration.py
+
+### Other
+
+- update getv/integrations/nfo.py
+
+
 ## [0.2.6] - 2026-02-19
 
 ### Summary
