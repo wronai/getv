@@ -7,12 +7,11 @@
 [![Tests](https://github.com/wronai/getv/workflows/Tests/badge.svg)](https://github.com/wronai/getv/actions)
 
 
-Coraz częściej pracujemy z API, zwłaszcza w kontekście LLM, tzreba ciągle podawać nowe, potem je kopiować do innych narzędzi , .env
-a co jeśli przy kopiowaniu do schowka były automatycznie zapisywane do .env z którego różne aplikacjia jak ollama, czy biblitoeki liteLLM pobeirałyby wskazany API TOKEN?
+We increasingly work with APIs, especially in the context of LLMs, constantly needing to provide new keys and then copy them to other tools, .env files. What if when copying to the clipboard, they were automatically saved to .env from which various applications like ollama or libraries like liteLLM could retrieve the specified API TOKEN?
 
-- kopjujesz API KEY w przeglądarce
-- uruchamiasz: getv grab
-- używasz wielu kluczy bezpośrednio: getv exec llm groq -- python app.py
+- copy an API KEY in your browser
+- run: getv grab
+- use multiple keys directly: getv exec llm groq -- python app.py
 
 Read, write, encrypt, and delegate environment variables across services and devices.
 
