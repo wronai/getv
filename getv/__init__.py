@@ -5,11 +5,11 @@ Read, write, encrypt, and delegate environment variables across services and dev
 """
 
 from getv.store import EnvStore
-from getv.profile import ProfileManager
+from getv.profile import ProfileManager, ProfileValidationError
 from getv.security import mask_value, is_sensitive_key
 from getv.app_defaults import AppDefaults
 
-__version__ = "0.2.4"
+__version__ = "0.2.5"
 
 __all__ = [
     "EnvStore",

@@ -598,7 +598,18 @@ def grab_cmd(ctx: clickmd.Context, dry_run: bool, category: str,
     clip = grab.read_clipboard()
 
     if not clip:
-        clickmd.echo("Clipboard is empty. Copy an API key first.", err=True)
+        # Check if clipboard tools are installed
+        import shutil
+        has_clipboard = any(
+            shutil.which(cmd[0]) for cmd in ClipboardGrab._clipboard_commands()
+        )
+        if not has_clipboard:
+            clickmd.echo("No clipboard tool found. Install one of:", err=True)
+            clickmd.echo("  sudo apt install xclip      # for X11", err=True)
+            clickmd.echo("  sudo apt install xsel      # alternative", err=True)
+            clickmd.echo("  sudo apt install wl-clipboard  # for Wayland", err=True)
+        else:
+            clickmd.echo("Clipboard is empty. Copy an API key first.", err=True)
         raise SystemExit(1)
 
     clip = clip.strip()

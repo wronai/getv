@@ -1,3 +1,28 @@
+## [0.2.5] - 2026-02-19
+
+### Summary
+
+feat(tests): CLI interface improvements
+
+### Docs
+
+- docs: update TODO.md
+
+### Test
+
+- update tests/test_cli_e2e.py
+- update tests/test_profile_features.py
+
+### Ci
+
+- config: update tests.yml
+
+### Other
+
+- update getv/__init__.py
+- update getv/__main__.py
+
+
 ## [0.2.4] - 2026-02-19
 
 ### Summary
