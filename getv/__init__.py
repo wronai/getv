@@ -10,7 +10,7 @@ from getv.security import mask_value, is_sensitive_key
 from getv.app_defaults import AppDefaults
 from getv.watcher import EnvWatcher
 
-__version__ = "0.2.8"
+__version__ = "0.2.9"
 
 __all__ = [
     "EnvStore",

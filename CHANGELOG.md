@@ -1,3 +1,14 @@
+## [0.2.9] - 2026-02-19
+
+### Summary
+
+refactor(None): core module improvements
+
+### Other
+
+- update getv.gif
+
+
 ## [0.2.8] - 2026-02-19
 
 ### Summary
