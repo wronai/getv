@@ -41,3 +41,8 @@
 - [ ] nfo integration — use getv.security for log redaction
 - [ ] PyPI publish
 - [ ] GitHub Actions CI
+
+
+### Implementation
+
+- [ ] zaimplementować we wszyztskich projektach we wronai/* które używają liteLLM
