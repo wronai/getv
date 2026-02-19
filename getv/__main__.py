@@ -654,6 +654,151 @@ def grab_cmd(ctx: clickmd.Context, dry_run: bool, category: str,
     clickmd.echo(f"  getv exec {result.category} {result.provider} -- python app.py")
 
 
+@cli.command("diff")
+@clickmd.argument("category")
+@clickmd.argument("profile_a")
+@clickmd.argument("profile_b")
+@clickmd.option("--show-secrets", is_flag=True, default=False, help="Show unmasked values")
+@clickmd.pass_context
+def diff_cmd(ctx: clickmd.Context, category: str, profile_a: str,
+             profile_b: str, show_secrets: bool) -> None:
+    """
+    ## Compare two profiles
+
+    ```bash
+    getv diff llm groq openrouter
+    getv diff devices rpi3 rpi4 --show-secrets
+    ```
+    """
+    pm = ProfileManager(ctx.obj["home"])
+    pm.add_category(category)
+
+    if not pm.exists(category, profile_a):
+        clickmd.echo(f"Profile not found: {category}/{profile_a}", err=True)
+        raise SystemExit(1)
+    if not pm.exists(category, profile_b):
+        clickmd.echo(f"Profile not found: {category}/{profile_b}", err=True)
+        raise SystemExit(1)
+
+    changes = pm.diff(category, profile_a, profile_b)
+    if not changes:
+        clickmd.echo(f"Profiles are identical: {category}/{profile_a} == {category}/{profile_b}")
+        return
+
+    clickmd.echo(f"--- {category}/{profile_a}")
+    clickmd.echo(f"+++ {category}/{profile_b}")
+    clickmd.echo("")
+    for key, (va, vb) in sorted(changes.items()):
+        mask = not show_secrets and is_sensitive_key(key)
+        if va is None:
+            display_b = mask_value(vb) if mask else vb
+            clickmd.echo(f"  + {key}={display_b}")
+        elif vb is None:
+            display_a = mask_value(va) if mask else va
+            clickmd.echo(f"  - {key}={display_a}")
+        else:
+            display_a = mask_value(va) if mask else va
+            display_b = mask_value(vb) if mask else vb
+            clickmd.echo(f"  ~ {key}: {display_a} → {display_b}")
+
+
+@cli.command("copy")
+@clickmd.argument("src", metavar="CATEGORY/PROFILE")
+@clickmd.argument("dst", metavar="CATEGORY/PROFILE")
+@clickmd.pass_context
+def copy_cmd(ctx: clickmd.Context, src: str, dst: str) -> None:
+    """
+    ## Clone a profile
+
+    ```bash
+    getv copy llm/groq llm/groq-backup
+    getv copy devices/rpi3 devices/rpi4
+    getv copy llm/groq api/groq          # cross-category
+    ```
+    """
+    if "/" not in src or "/" not in dst:
+        clickmd.echo("Format: getv copy CATEGORY/PROFILE CATEGORY/PROFILE", err=True)
+        raise SystemExit(1)
+
+    src_cat, src_name = src.split("/", 1)
+    dst_cat, dst_name = dst.split("/", 1)
+
+    pm = ProfileManager(ctx.obj["home"])
+    pm.add_category(src_cat)
+
+    if not pm.exists(src_cat, src_name):
+        clickmd.echo(f"Source not found: {src}", err=True)
+        raise SystemExit(1)
+
+    store = pm.copy(src_cat, src_name, dst_cat, dst_name)
+    clickmd.echo(f"Copied {src} → {dst} ({len(store.as_dict())} vars)")
+
+
+@cli.command("import")
+@clickmd.argument("file_path", type=clickmd.Path(exists=True))
+@clickmd.argument("category", required=False, default=None)
+@clickmd.argument("profile", required=False, default=None)
+@clickmd.pass_context
+def import_cmd(ctx: clickmd.Context, file_path: str, category: str, profile: str) -> None:
+    """
+    ## Import variables from a file into a profile
+
+    ```bash
+    getv import .env llm myapp                      # from .env file
+    getv import docker-compose.yml                   # auto-extract env vars
+    getv import /path/to/production.env cloud prod
+    ```
+
+    Supports `.env` files and docker-compose YAML (extracts environment vars).
+    If category/profile not given, uses 'imported/FILENAME'.
+    """
+    import_path = Path(file_path)
+    data: dict = {}
+
+    if import_path.suffix in (".yml", ".yaml"):
+        # Parse docker-compose: extract environment vars from all services
+        try:
+            import yaml
+        except ImportError:
+            # Fallback: basic YAML parsing for environment: sections
+            clickmd.echo("PyYAML not installed. Install with: pip install pyyaml", err=True)
+            raise SystemExit(1)
+
+        with open(import_path) as f:
+            compose = yaml.safe_load(f)
+
+        services = compose.get("services", {})
+        for svc_name, svc_cfg in services.items():
+            env_list = svc_cfg.get("environment", [])
+            if isinstance(env_list, dict):
+                for k, v in env_list.items():
+                    data[k] = str(v) if v is not None else ""
+            elif isinstance(env_list, list):
+                for item in env_list:
+                    if "=" in str(item):
+                        k, _, v = str(item).partition("=")
+                        data[k.strip()] = v.strip()
+    else:
+        # Parse as .env file
+        store = EnvStore(import_path, auto_create=False)
+        data = store.as_dict()
+
+    if not data:
+        clickmd.echo(f"No variables found in {import_path.name}", err=True)
+        raise SystemExit(1)
+
+    # Default category/profile from filename
+    if not category:
+        category = "imported"
+    if not profile:
+        profile = import_path.stem.replace(".", "-")
+
+    pm = ProfileManager(ctx.obj["home"])
+    pm.add_category(category)
+    pm.set(category, profile, data)
+    clickmd.echo(f"Imported {len(data)} var(s) from {import_path.name} → {category}/{profile}")
+
+
 def main() -> None:
     cli()
 

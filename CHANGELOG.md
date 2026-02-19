@@ -1,3 +1,14 @@
+## [0.2.4] - 2026-02-19
+
+### Summary
+
+feat(getv): CLI interface with 2 supporting modules
+
+### Other
+
+- update getv/__main__.py
+
+
 ## [0.2.3] - 2026-02-19
 
 ### Summary
