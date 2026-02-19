@@ -1,3 +1,18 @@
+## [0.2.6] - 2026-02-19
+
+### Summary
+
+fix(docs): configuration management system
+
+### Docs
+
+- docs: update README
+
+### Other
+
+- update getv/integrations/nfo.py
+
+
 ## [0.2.5] - 2026-02-19
 
 ### Summary
