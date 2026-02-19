@@ -10,6 +10,9 @@
 Coraz częściej pracujemy z API, zwłaszcza w kontekście LLM, tzreba ciągle podawać nowe, potem je kopiować do innych narzędzi , .env
 a co jeśli przy kopiowaniu do schowka były automatycznie zapisywane do .env z którego różne aplikacjia jak ollama, czy biblitoeki liteLLM pobeirałyby wskazany API TOKEN?
 
+- kopjujesz API KEY w przeglądarce
+- uruchamiasz: getv grab
+- używasz wielu kluczy bezpośrednio: getv exec llm groq -- python app.py
 
 Read, write, encrypt, and delegate environment variables across services and devices.
 
