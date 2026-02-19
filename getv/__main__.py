@@ -300,6 +300,145 @@ def decrypt(ctx: clickmd.Context, category: str, profile: str, key_file: str) ->
     clickmd.echo(f"Decrypted values in {category}/{profile}")
 
 
+@cli.command("exec")
+@clickmd.argument("category")
+@clickmd.argument("profile")
+@clickmd.argument("cmd", nargs=-1, required=True)
+@clickmd.pass_context
+def exec_cmd(ctx: clickmd.Context, category: str, profile: str, cmd: tuple) -> None:
+    """
+    ## Run a command with profile env vars injected
+
+    ```bash
+    getv exec llm groq -- python my_script.py
+    getv exec devices rpi3 -- ssh pi@host uname -a
+    getv exec llm ollama-local -- ollama run llama3.2
+    ```
+    """
+    from getv.integrations.subprocess_env import SubprocessEnv
+    import subprocess as sp
+
+    env = SubprocessEnv.build_env(base_dir=ctx.obj["home"], **{category: profile})
+    try:
+        result = sp.run(list(cmd), env=env)
+        raise SystemExit(result.returncode)
+    except FileNotFoundError:
+        clickmd.echo(f"Command not found: {cmd[0]}", err=True)
+        raise SystemExit(127)
+
+
+@cli.command("use")
+@clickmd.argument("app_name")
+@clickmd.argument("category")
+@clickmd.argument("profile")
+@clickmd.pass_context
+def use_cmd(ctx: clickmd.Context, app_name: str, category: str, profile: str) -> None:
+    """
+    ## Set default profile for an application
+
+    ```bash
+    getv use fixpi llm groq
+    getv use fixpi devices rpi3
+    getv use prellm llm openrouter
+    getv use marksync llm ollama-local
+    ```
+    """
+    from getv.app_defaults import AppDefaults
+    defaults = AppDefaults(app_name, base_dir=ctx.obj["home"])
+    defaults.set(category, profile)
+    clickmd.echo(f"Default for {app_name}: {category}={profile}")
+
+
+@cli.command("defaults")
+@clickmd.argument("app_name", required=False)
+@clickmd.pass_context
+def defaults_cmd(ctx: clickmd.Context, app_name: str) -> None:
+    """
+    ## Show app defaults
+
+    ```bash
+    getv defaults              # list all apps with defaults
+    getv defaults fixpi        # show fixpi defaults
+    ```
+    """
+    from getv.app_defaults import AppDefaults
+
+    if not app_name:
+        apps = AppDefaults.list_apps(base_dir=ctx.obj["home"])
+        if not apps:
+            clickmd.echo("No app defaults configured. Use: getv use APP CATEGORY PROFILE")
+            return
+        for name in apps:
+            d = AppDefaults(name, base_dir=ctx.obj["home"])
+            pairs = ", ".join(f"{k}={v}" for k, v in d.as_dict().items())
+            clickmd.echo(f"  {name}: {pairs}")
+        return
+
+    d = AppDefaults(app_name, base_dir=ctx.obj["home"])
+    data = d.as_dict()
+    if not data:
+        clickmd.echo(f"No defaults for {app_name}. Use: getv use {app_name} CATEGORY PROFILE")
+        return
+    for k, v in sorted(data.items()):
+        clickmd.echo(f"  {k}={v}")
+
+
+@cli.command("ssh")
+@clickmd.argument("profile")
+@clickmd.argument("remote_cmd", required=False, default="")
+@clickmd.pass_context
+def ssh_cmd(ctx: clickmd.Context, profile: str, remote_cmd: str) -> None:
+    """
+    ## SSH to a device using its profile
+
+    ```bash
+    getv ssh rpi3                    # interactive shell
+    getv ssh rpi3 "uname -a"        # run remote command
+    ```
+    """
+    from getv.integrations.ssh import SSHEnv
+    import subprocess as sp
+
+    try:
+        ssh = SSHEnv.from_profile(profile, base_dir=ctx.obj["home"])
+    except FileNotFoundError as e:
+        clickmd.echo(str(e), err=True)
+        raise SystemExit(1)
+
+    cmd = ssh.command(remote_cmd)
+    result = sp.run(cmd)
+    raise SystemExit(result.returncode)
+
+
+@cli.command("curl")
+@clickmd.argument("profile")
+@clickmd.argument("url")
+@clickmd.option("-X", "--method", default="GET", help="HTTP method")
+@clickmd.option("-d", "--data", "body", default=None, help="Request body")
+@clickmd.pass_context
+def curl_cmd(ctx: clickmd.Context, profile: str, url: str, method: str, body: str) -> None:
+    """
+    ## Make authenticated API call using profile credentials
+
+    ```bash
+    getv curl groq https://api.groq.com/openai/v1/models
+    getv curl openai https://api.openai.com/v1/models
+    ```
+    """
+    from getv.integrations.curl import CurlEnv
+    import subprocess as sp
+
+    try:
+        c = CurlEnv.from_profile("llm", profile, base_dir=ctx.obj["home"])
+    except FileNotFoundError as e:
+        clickmd.echo(str(e), err=True)
+        raise SystemExit(1)
+
+    cmd = c.command(url, method=method, data=body)
+    result = sp.run(cmd)
+    raise SystemExit(result.returncode)
+
+
 def main() -> None:
     cli()
 
