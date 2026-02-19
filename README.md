@@ -1,5 +1,11 @@
 # getv — Universal .env Variable Manager
 
+[![PyPI version](https://badge.fury.io/py/getv.svg)](https://badge.fury.io/py/getv)
+[![Python versions](https://img.shields.io/pypi/pyversions/getv)](https://pypi.org/project/getv/)
+[![License: Apache-2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Downloads](https://img.shields.io/pypi/dm/getv)](https://pypi.org/project/getv/)
+[![Tests](https://github.com/wronai/getv/workflows/Tests/badge.svg)](https://github.com/wronai/getv/actions)
+
 Read, write, encrypt, and delegate environment variables across services and devices.
 
 ## Why getv?
