@@ -681,6 +681,85 @@ def grab_cmd(ctx: clickmd.Context, dry_run: bool, category: str,
     clickmd.echo(f"  getv exec {result.category} {result.provider} -- python app.py")
 
 
+@cli.command("init")
+@clickmd.pass_context
+def init_cmd(ctx: clickmd.Context) -> None:
+    """
+    ## Interactive setup wizard
+
+    ```bash
+    getv init
+    ```
+
+    Creates the GETV_HOME directory structure and walks you through
+    setting up your first profiles (LLM providers, devices, etc.).
+    """
+    base = Path(ctx.obj["home"]).expanduser().resolve()
+
+    clickmd.echo(f"getv init — setting up {base}\n")
+
+    if base.exists():
+        cats = [d.name for d in sorted(base.iterdir()) if d.is_dir() and not d.name.startswith(".")]
+        if cats:
+            clickmd.echo(f"Existing categories: {', '.join(cats)}")
+    else:
+        base.mkdir(parents=True, exist_ok=True)
+        clickmd.echo(f"Created {base}")
+
+    pm = ProfileManager(ctx.obj["home"])
+
+    # Ask which categories to create
+    default_cats = ["llm", "devices", "tokens", "cloud"]
+    clickmd.echo(f"\nSuggested categories: {', '.join(default_cats)}")
+    cats_input = clickmd.prompt("Categories to create (comma-separated)",
+                                default=",".join(default_cats))
+    categories = [c.strip() for c in cats_input.split(",") if c.strip()]
+
+    for cat in categories:
+        pm.add_category(cat)
+        clickmd.echo(f"  Created {cat}/")
+
+    # Offer to create a first LLM profile
+    if "llm" in categories:
+        if clickmd.confirm("\nSet up an LLM provider profile?", default=True):
+            providers = ["groq", "openai", "anthropic", "openrouter", "ollama-local", "mistral"]
+            clickmd.echo(f"  Popular: {', '.join(providers)}")
+            name = clickmd.prompt("  Profile name", default="groq")
+            model = clickmd.prompt("  LLM_MODEL", default=f"{name}/llama-3.3-70b-versatile" if name == "groq" else "")
+            key_var = f"{name.upper().replace('-', '_')}_API_KEY"
+            key_val = clickmd.prompt(f"  {key_var} (leave empty to skip)", default="", show_default=False)
+
+            data = {}
+            if model:
+                data["LLM_MODEL"] = model
+            if key_val:
+                data[key_var] = key_val
+            if data:
+                pm.set("llm", name, data)
+                clickmd.echo(f"  Saved llm/{name} ({len(data)} vars)")
+
+    # Offer to create a device profile
+    if "devices" in categories:
+        if clickmd.confirm("\nSet up a device profile?", default=False):
+            name = clickmd.prompt("  Profile name", default="rpi3")
+            host = clickmd.prompt("  RPI_HOST (IP/hostname)", default="192.168.1.10")
+            user = clickmd.prompt("  RPI_USER", default="pi")
+
+            data = {"RPI_HOST": host, "RPI_USER": user}
+            port = clickmd.prompt("  RPI_PORT", default="22")
+            data["RPI_PORT"] = port
+
+            pm.set("devices", name, data)
+            clickmd.echo(f"  Saved devices/{name}")
+
+    clickmd.echo(f"\nDone! Your profiles are in {base}")
+    clickmd.echo(f"\nNext steps:")
+    clickmd.echo(f"  getv list                    # see all profiles")
+    clickmd.echo(f"  getv set llm groq KEY=val    # add variables")
+    clickmd.echo(f"  getv grab                    # paste API key from clipboard")
+    clickmd.echo(f"  getv exec llm groq -- cmd    # run with env injected")
+
+
 @cli.command("diff")
 @clickmd.argument("category")
 @clickmd.argument("profile_a")

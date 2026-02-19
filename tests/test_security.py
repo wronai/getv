@@ -4,7 +4,7 @@ import pytest
 from getv.security import (
     is_sensitive_key, mask_value, mask_dict,
     encrypt_value, decrypt_value, generate_key,
-    encrypt_store, decrypt_store,
+    encrypt_store, decrypt_store, rotate_key,
 )
 
 
@@ -79,3 +79,36 @@ def test_encrypt_decrypt_store_roundtrip():
     encrypted = encrypt_store(data, key, only_sensitive=True)
     decrypted = decrypt_store(encrypted, key)
     assert decrypted == data
+
+
+def test_rotate_key():
+    old_key = generate_key()
+    new_key = generate_key()
+    data = {
+        "RPI_HOST": "192.168.1.10",
+        "RPI_PASSWORD": "secret",
+        "API_KEY": "sk-123",
+    }
+    # Encrypt with old key
+    encrypted = encrypt_store(data, old_key, only_sensitive=True)
+    assert encrypted["RPI_PASSWORD"].startswith("ENC:")
+
+    # Rotate to new key
+    rotated = rotate_key(encrypted, old_key, new_key)
+
+    # Non-encrypted values unchanged
+    assert rotated["RPI_HOST"] == "192.168.1.10"
+
+    # Encrypted values are different tokens
+    assert rotated["RPI_PASSWORD"].startswith("ENC:")
+    assert rotated["RPI_PASSWORD"] != encrypted["RPI_PASSWORD"]
+
+    # Decrypt with NEW key works
+    decrypted = decrypt_store(rotated, new_key)
+    assert decrypted == data
+
+    # Decrypt with OLD key no longer works
+    import pytest as _pytest
+    from cryptography.fernet import InvalidToken
+    with _pytest.raises(InvalidToken):
+        decrypt_store(rotated, old_key)

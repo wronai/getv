@@ -113,3 +113,26 @@ def decrypt_store(data: Dict[str, str], key: bytes) -> Dict[str, str]:
         else:
             result[k] = v
     return result
+
+
+def rotate_key(data: Dict[str, str], old_key: bytes, new_key: bytes) -> Dict[str, str]:
+    """Re-encrypt all ENC: values from old_key to new_key.
+
+    Non-encrypted values are left unchanged.
+
+    Args:
+        data: Key-value pairs (some may have ENC: prefix).
+        old_key: Current Fernet key used for decryption.
+        new_key: New Fernet key to re-encrypt with.
+
+    Returns:
+        Dict with values re-encrypted under new_key.
+    """
+    decrypted = decrypt_store(data, old_key)
+    result = {}
+    for k, v in data.items():
+        if data[k].startswith("ENC:"):
+            result[k] = f"ENC:{encrypt_value(decrypted[k], new_key)}"
+        else:
+            result[k] = v
+    return result

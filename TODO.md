@@ -28,31 +28,32 @@
 - [x] `getv grab` — clipboard API key auto-detection (19 prefixes, browser history fallback)
 - [x] 128 tests (+ 44 clipboard)
 
-## Done (v0.2.2)
+## Done (v0.2.2–v0.2.5)
 
 - [x] Validation — required_keys enforcement on profile save (ProfileValidationError)
 - [x] `getv diff CATEGORY A B` — compare two profiles (added/removed/changed)
 - [x] `getv copy CATEGORY/SRC CATEGORY/DST` — clone a profile (cross-category)
 - [x] `getv import FILE` — import from .env or docker-compose.yml
+- [x] `getv init` — interactive setup wizard (categories, LLM profile, device profile)
+- [x] Key rotation — `rotate_key()` re-encrypts ENC: values from old to new Fernet key
 - [x] GitHub Actions CI (.github/workflows/tests.yml, Python 3.9–3.13)
-- [x] 29 E2E CLI tests + 18 profile feature tests
-- [x] 175 tests total
+- [x] 29 E2E CLI tests + 18 profile feature tests + 1 rotate_key test
+- [x] 176 tests total
 
 ## Pending
 
 ### Core
+
 - [ ] File watching — auto-reload on .env change (inotify/polling)
 - [ ] Schema — define expected keys/types per category (beyond required_keys)
 
 ### Security
+
 - [ ] Age encryption support (alternative to Fernet)
 - [ ] SOPS integration for team secret management
-- [ ] Key rotation — re-encrypt with new key
 - [ ] Audit log — track who changed what
 
-### CLI
-- [ ] `getv init` — interactive setup wizard
-
 ### Integration
+
 - [ ] nfo integration — use getv.security for log redaction
 - [ ] PyPI publish
