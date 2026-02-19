@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "getv"
-version = "0.1.4"
+version = "0.2.1"
 description = "Universal .env variable manager — read, write, encrypt, delegate across services and devices"
 readme = "README.md"
 license = "Apache-2.0"
@@ -29,14 +29,12 @@ classifiers = [
 ]
 dependencies = [
     "python-dotenv>=1.0.0",
+    "click>=8.0",
 ]
 
 [project.optional-dependencies]
 crypto = [
     "cryptography>=41.0",
-]
-cli = [
-    "click>=8.0",
 ]
 pydantic = [
     "pydantic>=2.0",
@@ -44,7 +42,6 @@ pydantic = [
 ]
 all = [
     "cryptography>=41.0",
-    "click>=8.0",
     "pydantic>=2.0",
     "pydantic-settings>=2.0",
 ]

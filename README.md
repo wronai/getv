@@ -31,6 +31,8 @@ Every project reinvents `.env` parsing. `getv` provides one library for:
 
 - **Reading/writing** `.env` files with comment preservation
 - **Profile management** — named configs for devices, LLM providers, databases
+- **App defaults** — per-app profile selection (`~/.getv/defaults/APP.conf`)
+- **Integrations** — plugins for SSH, LiteLLM, Ollama, Docker, curl, Pydantic
 - **Secret masking** — automatic detection and masking of passwords/keys in logs
 - **Encryption** — Fernet-based encryption of sensitive values for safe transport
 - **Format export** — dict, JSON, shell, docker-compose, pydantic BaseSettings
@@ -44,6 +46,8 @@ pip install "getv[crypto]"         # + encryption (Fernet)
 pip install "getv[pydantic]"       # + pydantic BaseSettings export
 pip install "getv[all]"            # everything
 ```
+
+**v0.2.0** — New integrations, app defaults, and 8 examples
 
 ## Quick Start
 
