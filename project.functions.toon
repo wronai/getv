@@ -1,0 +1,282 @@
+project: getv
+generated: "2026-02-19T15:10:49.753230"
+modules[28]{path,lang,items}:
+  examples/04_ollama_config.py,python,0
+  examples/02_ssh_from_profile.py,python,0
+  examples/01_quick_start.py,python,0
+  examples/08_pydantic_settings.py,python,0
+  examples/03_litellm_multi_provider.py,python,0
+  examples/06_app_defaults.py,python,0
+  examples/05_docker_env.py,python,0
+  tests/test_security.py,python,6
+  tests/__init__.py,python,0
+  tests/test_store.py,python,16
+  tests/test_app_defaults.py,python,12
+  tests/test_profile.py,python,13
+  tests/test_integrations.py,python,41
+  getv/formats.py,python,7
+  getv/store.py,python,20
+  getv/security.py,python,8
+  getv/__init__.py,python,0
+  getv/__main__.py,python,15
+  getv/profile.py,python,17
+  getv/app_defaults.py,python,10
+  getv/integrations/subprocess_env.py,python,5
+  getv/integrations/docker.py,python,9
+  getv/integrations/ollama.py,python,8
+  getv/integrations/litellm.py,python,9
+  getv/integrations/pydantic_env.py,python,3
+  getv/integrations/__init__.py,python,0
+  getv/integrations/curl.py,python,5
+  getv/integrations/ssh.py,python,9
+
+function_details:
+  tests/test_security.py:
+    functions[6]{name,kind,sig,loc,async,lines,cc,does}:
+      test_is_sensitive_key,function,(),11-24,false,14,1,checks is sensitive key
+      test_mask_value,function,(),27-31,false,5,1,checks mask value
+      test_mask_dict,function,(),34-45,false,12,1,checks mask dict
+      test_encrypt_decrypt_roundtrip,function,(),48-54,false,7,1,checks encrypt decrypt roundtrip
+      test_encrypt_store_only_sensitive,function,(),57-69,false,13,1,checks encrypt store only sensitive
+      test_encrypt_decrypt_store_roundtrip,function,(),72-81,false,10,1,checks encrypt decrypt store roundtrip
+  tests/test_store.py:
+    functions[16]{name,kind,sig,loc,async,lines,cc,does}:
+      tmp_env,function,(tmp_path),9-21,false,13,1,Create a temporary .env file.
+      test_load_and_get,function,(tmp_env),24-31,false,8,1,checks load and get
+      test_getitem,function,(tmp_env),34-38,false,5,1,checks getitem
+      test_contains,function,(tmp_env),41-44,false,4,1,checks contains
+      test_len_and_iter,function,(tmp_env),47-50,false,4,1,checks len and iter
+      test_set_and_save,function,(tmp_env),53-63,false,11,1,checks set and save
+      test_save_preserves_comments,function,(tmp_env),66-73,false,8,1,checks save preserves comments
+      test_delete,function,(tmp_env),76-83,false,8,1,checks delete
+      test_update,function,(tmp_env),86-90,false,5,1,checks update
+      test_as_dict,function,(tmp_env),93-98,false,6,1,checks as dict
+      test_merge_file,function,(tmp_path),101-111,false,11,1,checks merge file
+      test_to_shell_export,function,(tmp_env),114-118,false,5,1,checks to shell export
+      test_to_json,function,(tmp_env),121-125,false,5,1,checks to json
+      test_auto_create,function,(tmp_path),128-134,false,7,1,checks auto create
+      test_quoted_values,function,(tmp_path),137-143,false,7,1,checks quoted values
+      test_reload,function,(tmp_env),146-152,false,7,1,checks reload
+  tests/test_app_defaults.py:
+    functions[12]{name,kind,sig,loc,async,lines,cc,does}:
+      tmp_getv,function,(tmp_path),9-11,false,3,1,Create a temporary getv directory.
+      TestAppDefaults.test_set_and_get,method,(tmp_getv),15-18,false,4,1,checks set and get
+      TestAppDefaults.test_get_default,method,(tmp_getv),20-23,false,4,1,checks get default
+      TestAppDefaults.test_persistence,method,(tmp_getv),25-32,false,8,1,checks persistence
+      TestAppDefaults.test_remove,method,(tmp_getv),34-38,false,5,1,checks remove
+      TestAppDefaults.test_as_dict,method,(tmp_getv),40-44,false,5,1,checks as dict
+      TestAppDefaults.test_as_profile_kwargs,method,(tmp_getv),46-50,false,5,1,checks as profile kwargs
+      TestAppDefaults.test_list_apps,method,(tmp_getv),52-57,false,6,1,checks list apps
+      TestAppDefaults.test_list_apps_empty,method,(tmp_getv),59-60,false,2,1,checks list apps empty
+      TestAppDefaults.test_multiple_apps_isolated,method,(tmp_getv),62-66,false,5,1,checks multiple apps isolated
+      TestAppDefaults.test_overwrite,method,(tmp_getv),68-72,false,5,1,checks overwrite
+      TestAppDefaults.test_repr,method,(tmp_getv),74-79,false,6,1,checks repr
+  tests/test_profile.py:
+    functions[13]{name,kind,sig,loc,async,lines,cc,does}:
+      pm,function,(tmp_path),9-14,false,6,1,Create a ProfileManager with temp base dir.
+      test_set_and_get,function,(pm),17-22,false,6,1,checks set and get
+      test_get_dict,function,(pm),25-28,false,4,1,checks get dict
+      test_get_nonexistent,function,(pm),31-33,false,3,1,checks get nonexistent
+      test_delete,function,(pm),36-41,false,6,1,checks delete
+      test_list,function,(pm),44-50,false,7,2,checks list
+      test_list_names,function,(pm),53-56,false,4,1,checks list names
+      test_list_categories,function,(pm),59-62,false,4,1,checks list categories
+      test_merge_profiles,function,(pm),65-74,false,10,1,checks merge profiles
+      test_merge_profiles_none_skipped,function,(pm),77-80,false,4,1,checks merge profiles none skipped
+      test_find_by_key,function,(pm),83-89,false,7,1,checks find by key
+      test_list_table,function,(pm),92-98,false,7,1,checks list table
+      test_list_all,function,(pm),101-108,false,8,1,checks list all
+  tests/test_integrations.py:
+    functions[41]{name,kind,sig,loc,async,lines,cc,does}:
+      pm,function,(tmp_path),11-42,false,32,1,ProfileManager with test profiles.
+      TestLiteLLMIntegration.test_from_dict,method,(),46-54,false,9,1,checks from dict
+      TestLiteLLMIntegration.test_from_profile,method,(pm),56-60,false,5,1,checks from profile
+      TestLiteLLMIntegration.test_as_completion_kwargs,method,(),62-67,false,6,1,checks as completion kwargs
+      TestLiteLLMIntegration.test_activate,method,"(pm, monkeypatch)",69-74,false,6,1,checks activate
+      TestLiteLLMIntegration.test_detect_provider_ollama,method,(),76-79,false,4,1,checks detect provider ollama
+      TestLiteLLMIntegration.test_default_model,method,(),81-83,false,3,1,checks default model
+      TestLiteLLMIntegration.test_provider_key_var,method,(),85-88,false,4,1,checks provider key var
+      TestLiteLLMIntegration.test_profile_not_found,method,(pm),90-93,false,4,1,checks profile not found
+      TestSSHIntegration.test_from_dict_rpi,method,(),97-108,false,12,1,checks from dict rpi
+      TestSSHIntegration.test_from_dict_generic,method,(),110-118,false,9,1,checks from dict generic
+      TestSSHIntegration.test_from_profile,method,(pm),120-124,false,5,1,checks from profile
+      TestSSHIntegration.test_connection_string,method,(),126-129,false,4,1,checks connection string
+      TestSSHIntegration.test_command_with_password,method,(),131-139,false,9,1,checks command with password
+      TestSSHIntegration.test_command_with_key_file,method,(),141-147,false,7,1,checks command with key file
+      TestSSHIntegration.test_scp_to,method,(),149-155,false,7,1,checks scp to
+      TestSSHIntegration.test_scp_from,method,(),157-162,false,6,1,checks scp from
+      TestSSHIntegration.test_paramiko_kwargs,method,(),164-171,false,8,1,checks paramiko kwargs
+      TestSSHIntegration.test_profile_not_found,method,(pm),173-176,false,4,1,checks profile not found
+      TestOllamaIntegration.test_from_dict,method,(),180-189,false,10,1,checks from dict
+      TestOllamaIntegration.test_from_dict_strips_prefix,method,(),191-194,false,4,1,checks from dict strips prefix
+      TestOllamaIntegration.test_from_profile,method,(pm),196-200,false,5,1,checks from profile
+      TestOllamaIntegration.test_api_url,method,(),202-205,false,4,1,checks api url
+      TestOllamaIntegration.test_run_command,method,(),207-211,false,5,1,checks run command
+      TestOllamaIntegration.test_pull_command,method,(),213-216,false,4,1,checks pull command
+      TestOllamaIntegration.test_litellm_model,method,(),218-221,false,4,1,checks litellm model
+      TestOllamaIntegration.test_litellm_model_already_prefixed,method,(),223-226,false,4,1,checks litellm model already prefixed
+      TestOllamaIntegration.test_as_litellm_kwargs,method,(),228-233,false,6,1,checks as litellm kwargs
+      TestDockerIntegration.test_from_profile,method,(pm),237-242,false,6,1,checks from profile
+      TestDockerIntegration.test_write_env_file,method,"(pm, tmp_path)",244-250,false,7,1,checks write env file
+      TestDockerIntegration.test_run_command,method,(),252-260,false,9,1,checks run command
+      TestDockerIntegration.test_compose_environment,method,(),262-267,false,6,1,checks compose environment
+      TestDockerIntegration.test_from_profiles_merge,method,(pm),269-274,false,6,1,checks from profiles merge
+      TestSubprocessEnv.test_build_env,method,(pm),278-282,false,5,1,checks build env
+      TestSubprocessEnv.test_build_env_no_inherit,method,(pm),284-288,false,5,1,checks build env no inherit
+      TestSubprocessEnv.test_shell_export,method,(pm),290-294,false,5,1,checks shell export
+      TestSubprocessEnv.test_env_inline,method,(pm),296-300,false,5,1,checks env inline
+      TestCurlIntegration.test_command_with_auth,method,(),304-309,false,6,2,checks command with auth
+      TestCurlIntegration.test_command_no_auth,method,(),311-315,false,5,2,checks command no auth
+      TestCurlIntegration.test_chat_completion,method,(),317-322,false,6,2,checks chat completion
+      TestCurlIntegration.test_from_profile,method,(pm),324-328,false,5,2,checks from profile
+  getv/formats.py:
+    functions[7]{name,kind,sig,loc,async,lines,cc,does}:
+      to_dict,function,"(data:Dict[str,str]) -> Dict[str, str]",9-11,false,3,1,Identity — return a plain dict copy.
+      to_json,function,"(data:Dict[str,str], indent:int=2) -> str",14-16,false,3,1,Export as formatted JSON string.
+      to_shell_export,function,"(data:Dict[str,str]) -> str",19-25,false,7,2,Generate shell `export KEY='value'` statements.
+      to_docker_env,function,"(data:Dict[str,str]) -> str",28-30,false,3,2,Generate docker-compose environment format (KEY=value).
+      to_env_file,function,"(data:Dict[str,str], header:Optional[str]=None) -> str",33-41,false,9,3,Generate .env file content with optional header comment.
+      to_pydantic_settings,function,"(data:Dict[str,str], class_name:str='Settings') -> str",44-68,false,25,4,Generate a pydantic BaseSettings class source code from env data.
+      to_pydantic_model,function,"(data:Dict[str,str], class_name:str='Settings') -> Any",71-101,false,31,6,Create an actual pydantic BaseSettings instance from env data.
+  getv/store.py:
+    functions[20]{name,kind,sig,loc,async,lines,cc,does}:
+      EnvStore.__init__,method,"(path:Any, auto_create:bool=True) -> None",26-35,false,10,3,creates
+      EnvStore._load,method,() -> None,39-56,false,18,8,"Parse .env file, extracting key=value pairs."
+      EnvStore.reload,method,"() -> \"EnvStore\"",58-62,false,5,2,Re-read from disk.
+      EnvStore.get,method,"(key:str, default:Optional[str]=None) -> Optional[str]",64-66,false,3,1,Get a variable value.
+      EnvStore.__getitem__,method,"(key:str) -> str",68-69,false,2,1,getitem
+      EnvStore.__contains__,method,"(key:str) -> bool",71-72,false,2,1,contains
+      EnvStore.keys,method,"() -> List[str]",74-75,false,2,1,keys
+      EnvStore.items,method,"() -> List[Tuple[str, str]]",77-78,false,2,1,items
+      EnvStore.as_dict,method,"() -> Dict[str, str]",80-82,false,3,1,Return all variables as a plain dict.
+      EnvStore.__len__,method,() -> int,84-85,false,2,1,len
+      EnvStore.__iter__,method,"() -> Iterator[str]",87-88,false,2,1,iter
+      EnvStore.set,method,"(key:str, value:str) -> \"EnvStore\"",92-95,false,4,1,Set a variable (in memory).
+      EnvStore.update,method,"(mapping:Dict[str,str]) -> \"EnvStore\"",97-100,false,4,1,Bulk-set from a dict.
+      EnvStore.delete,method,"(key:str) -> \"EnvStore\"",102-105,false,4,1,Remove a variable.
+      EnvStore.save,method,() -> Path,107-140,false,34,9,"Write to disk, preserving comments from the original file."
+      EnvStore.merge_from,method,"(other:EnvStore) -> \"EnvStore\"",144-147,false,4,1,Overlay another store's values on top of this one.
+      EnvStore.merge_file,method,"(path:Any) -> \"EnvStore\"",149-152,false,4,1,Overlay values from another .env file.
+      EnvStore.to_shell_export,method,() -> str,156-162,false,7,2,Generate shell export statements.
+      EnvStore.to_json,method,() -> str,164-167,false,4,1,Export as JSON string.
+      EnvStore.__repr__,method,() -> str,169-170,false,2,1,repr
+  getv/security.py:
+    functions[8]{name,kind,sig,loc,async,lines,cc,does}:
+      is_sensitive_key,function,"(key:str) -> bool",25-27,false,3,1,Check if a key name likely holds a secret value.
+      mask_value,function,"(value:str, visible_chars:int=4) -> str",30-34,false,5,2,"Mask a sensitive value, showing only first N chars."
+      mask_dict,function,"(data:Dict[str,str], visible_chars:int=4) -> Dict[str, str]",37-45,false,9,3,Return a copy with sensitive values masked.
+      encrypt_value,function,"(value:str, key:bytes) -> str",50-65,false,16,2,Encrypt a string value using Fernet symmetric encryption.
+      decrypt_value,function,"(token:str, key:bytes) -> str",68-75,false,8,2,Decrypt a Fernet-encrypted token back to plaintext.
+      generate_key,function,() -> bytes,78-84,false,7,2,Generate a new Fernet encryption key.
+      encrypt_store,function,"(data:Dict[str,str], key:bytes, only_sensitive:bool=True) -> Dict[str, str]",87-104,false,18,4,Encrypt values in a dict for safe transport.
+      decrypt_store,function,"(data:Dict[str,str], key:bytes) -> Dict[str, str]",107-115,false,9,3,Decrypt values that were encrypted by encrypt_store.
+  getv/__main__.py:
+    functions[15]{name,kind,sig,loc,async,lines,cc,does}:
+      _default_manager,function,() -> ProfileManager,22-33,false,12,5,Create a ProfileManager from GETV_HOME or ~/.getv.
+      cli,function,"(ctx:Any, home_dir:str) -> None",41-59,false,19,3,# getv — Universal .env Variable Manager
+      get,function,"(ctx:Any, category:str, profile:str, key:str) -> None",67-84,false,18,3,## Get a variable
+      set_cmd,function,"(ctx:Any, category:str, profile:str, pairs:tuple) -> None",92-111,false,20,3,## Set variables
+      list_cmd,function,"(ctx:Any, category:str, profile:str, show_secrets:bool) -> None",119-168,false,50,18,## List profiles or variables
+      delete,function,"(ctx:Any, category:str, profile:str) -> None",175-187,false,13,2,## Delete a profile
+      export_cmd,function,"(ctx:Any, category:str, profile:str, fmt:str) -> None",196-226,false,31,7,## Export profile to different formats
+      encrypt,function,"(ctx:Any, category:str, profile:str, key_file:str) -> None",234-266,false,33,4,## Encrypt sensitive values in a profile
+      decrypt,function,"(ctx:Any, category:str, profile:str, key_file:str) -> None",274-300,false,27,4,## Decrypt encrypted values in a profile
+      exec_cmd,function,"(ctx:Any, category:str, profile:str, cmd:tuple) -> None",308-327,false,20,2,## Run a command with profile env vars injected
+      use_cmd,function,"(ctx:Any, app_name:str, category:str, profile:str) -> None",335-349,false,15,1,## Set default profile for an application
+      defaults_cmd,function,"(ctx:Any, app_name:str) -> None",355-383,false,29,7,## Show app defaults
+      ssh_cmd,function,"(ctx:Any, profile:str, remote_cmd:str) -> None",390-410,false,21,2,## SSH to a device using its profile
+      curl_cmd,function,"(ctx:Any, profile:str, url:str, method:str, body:str) -> None",419-439,false,21,2,## Make authenticated API call using profile credentials
+      main,function,() -> None,442-443,false,2,1,main
+  getv/profile.py:
+    functions[17]{name,kind,sig,loc,async,lines,cc,does}:
+      ProfileManager.__init__,method,"(base_dir:Any='~/.getv') -> None",46-48,false,3,1,creates
+      ProfileManager.add_category,method,"(name:str, required_keys:Optional[List[str]]=None, defaults:Optional[Dict[str,str]]=None) -> \"ProfileManager\"",50-63,false,14,3,Register a profile category (e.g.
+      ProfileManager._category_dir,method,"(category:str) -> Path",65-68,false,4,1,category dir
+      ProfileManager._profile_path,method,"(category:str, name:str) -> Path",70-71,false,2,1,profile path
+      ProfileManager.get,method,"(category:str, name:str) -> Optional[EnvStore]",75-80,false,6,2,Load a profile by category and name.
+      ProfileManager.get_dict,method,"(category:str, name:str) -> Dict[str, str]",82-85,false,4,2,Load profile as a plain dict.
+      ProfileManager.set,method,"(category:str, name:str, data:Dict[str,str]) -> EnvStore",87-93,false,7,1,Create or update a profile.
+      ProfileManager.delete,method,"(category:str, name:str) -> bool",95-101,false,7,2,Delete a profile.
+      ProfileManager.exists,method,"(category:str, name:str) -> bool",103-104,false,2,1,exists
+      ProfileManager.list,method,"(category:str) -> List[Tuple[str, EnvStore]]",108-114,false,7,2,"List all profiles in a category as (name, EnvStore) pairs."
+      ProfileManager.list_names,method,"(category:str) -> List[str]",116-118,false,3,2,List profile names in a category.
+      ProfileManager.list_categories,method,"() -> List[str]",120-122,false,3,1,List all registered categories.
+      ProfileManager.list_all,method,"() -> Dict[str, List[Tuple[str, Dict[str, str]]]]",124-131,false,8,3,Return all categories with their profiles as dicts.
+      ProfileManager.merge_profiles,method,"(base:Dict[str,str]) -> Dict[str, str]",135-158,false,24,4,Merge named profiles on top of a base config.
+      ProfileManager.find_by_key,method,"(category:str, key:str, value:str) -> List[str]",162-168,false,7,3,Find profile names where key matches value.
+      ProfileManager.list_table,method,"(category:str, columns:Optional[List[str]]=None) -> List[Dict[str, str]]",172-181,false,10,4,"Return profiles as list of dicts with masked sensitive values, suitable for tabl..."
+      ProfileManager.__repr__,method,() -> str,183-185,false,3,2,repr
+  getv/app_defaults.py:
+    functions[10]{name,kind,sig,loc,async,lines,cc,does}:
+      AppDefaults.__init__,method,"(app_name:str, base_dir:Any='~/.getv') -> None",44-52,false,9,2,creates
+      AppDefaults._load,method,() -> None,54-61,false,8,5,retrieves
+      AppDefaults._save,method,() -> None,63-67,false,5,2,caches
+      AppDefaults.get,method,"(category:str, default:Optional[str]=None) -> Optional[str]",69-71,false,3,1,Get default profile name for a category.
+      AppDefaults.set,method,"(category:str, profile_name:str) -> \"AppDefaults\"",73-77,false,5,1,Set default profile for a category.
+      AppDefaults.remove,method,"(category:str) -> \"AppDefaults\"",79-83,false,5,1,Remove a default.
+      AppDefaults.as_dict,method,"() -> Dict[str, str]",85-87,false,3,1,"Return all defaults as {category: profile_name}."
+      AppDefaults.as_profile_kwargs,method,"() -> Dict[str, Optional[str]]",89-91,false,3,1,Return defaults formatted for ProfileManager.merge_profiles(**kwargs).
+      AppDefaults.list_apps,method,"(base_dir:Any='~/.getv') -> List[str]",94-99,false,6,3,List all apps that have defaults configured.
+      AppDefaults.__repr__,method,() -> str,101-102,false,2,1,repr
+  getv/integrations/subprocess_env.py:
+    functions[5]{name,kind,sig,loc,async,lines,cc,does}:
+      SubprocessEnv.build_env,method,"(base_dir:Any='~/.getv', inherit:bool=True) -> Dict[str, str]",37-57,false,21,5,Build an env dict from multiple profiles.
+      SubprocessEnv.run,method,"(category:str, profile_name:str, cmd:List[str], base_dir:Any='~/.getv', capture:bool=False, timeout:Optional[int]=None) -> subprocess.CompletedProcess",60-66,false,7,1,Run a command with a single profile's env vars injected.
+      SubprocessEnv.run_with_env,method,"(env:Dict[str,str], cmd:List[str], capture:bool=False, timeout:Optional[int]=None) -> subprocess.CompletedProcess",69-74,false,6,1,Run a command with a pre-built env dict.
+      SubprocessEnv.shell_export,method,"(category:str, profile_name:str, base_dir:Any='~/.getv') -> str",77-94,false,18,3,Generate shell export statements for eval.
+      SubprocessEnv.env_inline,method,"(category:str, profile_name:str, base_dir:Any='~/.getv') -> str",97-113,false,17,3,Generate inline KEY=VALUE for prefixing commands.
+  getv/integrations/docker.py:
+    functions[9]{name,kind,sig,loc,async,lines,cc,does}:
+      DockerEnv.__init__,method,"(data:Dict[str,str]) -> None",35-36,false,2,1,creates
+      DockerEnv.from_profile,method,"(category:str, profile_name:str, base_dir:Any='~/.getv') -> \"DockerEnv\"",39-47,false,9,2,Load env vars from a getv profile.
+      DockerEnv.from_profiles,method,"(base_dir:Any='~/.getv') -> \"DockerEnv\"",50-62,false,13,4,Merge multiple profiles into one Docker env.
+      DockerEnv.write_env_file,method,"(path:Any) -> Path",64-70,false,7,2,"Write a Docker-compatible env file (KEY=VALUE, no quotes)."
+      DockerEnv.run_command,method,"(image:str, cmd:str='', extra_args:Optional[List[str]]=None) -> List[str]",72-82,false,11,4,Build docker run command with --env flags.
+      DockerEnv.run_command_env_file,method,"(image:str, cmd:str='') -> List[str]",84-91,false,8,2,Build docker run command with --env-file (writes temp file).
+      DockerEnv.compose_environment,method,() -> str,93-98,false,6,2,"Generate docker-compose environment: block."
+      DockerEnv.compose_env_file_entry,method,"(path:str='.env') -> str",100-102,false,3,1,"Generate docker-compose env_file: block."
+      DockerEnv.as_dict,method,"() -> Dict[str, str]",104-105,false,2,1,as dict
+  getv/integrations/ollama.py:
+    functions[8]{name,kind,sig,loc,async,lines,cc,does}:
+      OllamaEnv.from_profile,method,"(profile_name:str, base_dir:Any='~/.getv') -> \"OllamaEnv\"",41-53,false,13,3,Load Ollama config from a getv profile.
+      OllamaEnv.from_dict,method,"(data:Dict[str,str]) -> \"OllamaEnv\"",56-66,false,11,2,from dict
+      OllamaEnv.activate,method,() -> None,68-72,false,5,2,Set os.environ for Ollama/litellm usage.
+      OllamaEnv.api_url,method,"(path:str='') -> str",74-77,false,4,2,Build full API URL.
+      OllamaEnv.run_command,method,"(prompt:str='') -> List[str]",79-84,false,6,2,Build ollama CLI command.
+      OllamaEnv.pull_command,method,"() -> List[str]",86-88,false,3,1,Build ollama pull command.
+      OllamaEnv.litellm_model,method,() -> str,90-94,false,5,2,Return model string with ollama/ prefix for litellm.
+      OllamaEnv.as_litellm_kwargs,method,"() -> Dict[str, str]",96-101,false,6,1,Return kwargs for litellm.completion().
+  getv/integrations/litellm.py:
+    functions[9]{name,kind,sig,loc,async,lines,cc,does}:
+      LiteLLMEnv.from_profile,method,"(profile_name:str, base_dir:Any='~/.getv') -> \"LiteLLMEnv\"",70-82,false,13,2,Load LLM config from a getv profile.
+      LiteLLMEnv.from_env_file,method,"(path:Any) -> \"LiteLLMEnv\"",85-88,false,4,1,Load from a specific .env file.
+      LiteLLMEnv.from_dict,method,"(data:Dict[str,str]) -> \"LiteLLMEnv\"",91-112,false,22,5,Resolve LiteLLM config from a dict of env vars.
+      LiteLLMEnv._detect_provider,method,"(model:str, data:Dict[str,str]) -> str",115-125,false,11,7,Detect provider from model string or env keys.
+      LiteLLMEnv.activate,method,() -> None,127-135,false,9,6,Inject this config into os.environ for litellm.
+      LiteLLMEnv.as_completion_kwargs,method,"() -> Dict[str, Any]",137-144,false,8,3,"Return kwargs for litellm.completion(model=..., api_key=..., api_base=...)."
+      LiteLLMEnv.check_providers,method,"(base_dir:Any='~/.getv') -> Dict[str, bool]",147-155,false,9,2,Check which LLM providers have profiles configured.
+      LiteLLMEnv.default_model,method,"(provider:str) -> str",158-160,false,3,1,Get default model for a provider.
+      LiteLLMEnv.provider_key_var,method,"(provider:str) -> str",163-165,false,3,1,Get the env var name for a provider's API key.
+  getv/integrations/pydantic_env.py:
+    functions[3]{name,kind,sig,loc,async,lines,cc,does}:
+      load_profile_into_env,function,"(category:str, profile_name:str, base_dir:Any='~/.getv', override:bool=False) -> Dict[str, str]",31-56,false,26,5,Load a getv profile's vars into os.environ.
+      profile_overrides,function,"(settings_cls:Type[T], base_dir:Any='~/.getv') -> Dict[str, Any]",59-92,false,34,7,Get profile vars mapped to Settings field names.
+      profile_settings,function,"(settings_cls:Type[T], base_dir:Any='~/.getv') -> T",95-105,false,11,3,Create a Settings instance with profile vars injected into env.
+  getv/integrations/curl.py:
+    functions[5]{name,kind,sig,loc,async,lines,cc,does}:
+      CurlEnv.__init__,method,"(data:Dict[str,str]) -> None",27-31,false,5,1,creates
+      CurlEnv._detect_auth,method,() -> None,33-47,false,15,9,detect auth
+      CurlEnv.from_profile,method,"(category:str, profile_name:str, base_dir:Any='~/.getv') -> \"CurlEnv\"",50-58,false,9,2,from profile
+      CurlEnv.command,method,"(url:str, method:str='GET', data:Optional[str]=None, headers:Optional[Dict[str,str]]=None) -> List[str]",60-76,false,17,6,Build a curl command with auth.
+      CurlEnv.chat_completion,method,"(message:str, model:Optional[str]=None, api_base:Optional[str]=None) -> List[str]",78-89,false,12,4,Build a curl command for OpenAI-compatible chat completion.
+  getv/integrations/ssh.py:
+    functions[9]{name,kind,sig,loc,async,lines,cc,does}:
+      SSHEnv.from_profile,method,"(profile_name:str, base_dir:Any='~/.getv') -> \"SSHEnv\"",36-44,false,9,2,Load SSH config from a getv device profile.
+      SSHEnv.from_dict,method,"(data:Dict[str,str]) -> \"SSHEnv\"",47-54,false,8,1,from dict
+      SSHEnv.connection_string,method,() -> str,56-58,false,3,1,user@host format.
+      SSHEnv.command,method,"(remote_cmd:str='') -> List[str]",60-76,false,17,5,Build a full ssh command line as list of args.
+      SSHEnv.scp_to,method,"(local_path:str, remote_path:str) -> List[str]",78-90,false,13,4,Build scp command to upload a file.
+      SSHEnv.scp_from,method,"(remote_path:str, local_path:str) -> List[str]",92-104,false,13,4,Build scp command to download a file.
+      SSHEnv.run,method,"(remote_cmd:str, capture:bool=False, timeout:int=30) -> subprocess.CompletedProcess",106-114,false,9,1,Execute a remote command via SSH.
+      SSHEnv.as_paramiko_kwargs,method,"() -> Dict[str, Any]",116-127,false,12,3,Return kwargs for paramiko.SSHClient.connect().
+      SSHEnv.as_fabric_kwargs,method,"() -> Dict[str, Any]",129-143,false,15,4,Return kwargs for fabric.Connection().

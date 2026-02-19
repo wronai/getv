@@ -1,3 +1,19 @@
+## [0.1.4] - 2026-02-19
+
+### Summary
+
+feat(docs): configuration management system
+
+### Docs
+
+- docs: update README
+
+### Other
+
+- update project.functions.toon
+- update project.toon-schema.json
+
+
 ## [0.1.3] - 2026-02-19
 
 ### Summary

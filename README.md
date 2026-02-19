@@ -16,6 +16,7 @@ Read, write, encrypt, and delegate environment variables across services and dev
 - [Profile Directory Structure](#profile-directory-structure)
 - [App Defaults](#app-defaults)
 - [Integrations](#integrations)
+- [One-liner Examples](#one-liner-examples)
 - [Security](#security)
 - [Format Export](#format-export)
 - [CLI Reference](#cli-reference)
@@ -57,7 +58,7 @@ store.set("DB_HOST", "localhost").set("DB_PORT", "5432").save()
 print(store.get("DB_HOST"))  # "localhost"
 
 # Profile manager — multiple named configs
-pm = ProfileManager("~/.fixpi")
+pm = ProfileManager("~/.getv")
 pm.add_category("devices", required_keys=["RPI_HOST", "RPI_USER"])
 pm.add_category("llm", required_keys=["LLM_MODEL"])
 
@@ -74,10 +75,16 @@ pm.set("llm", "groq", {
 })
 
 # Merge profiles on top of base config
-base = {"APP_NAME": "fixpi", "RPI_HOST": "default"}
+base = {"APP_NAME": "myapp", "RPI_HOST": "default"}
 cfg = pm.merge_profiles(base, devices="rpi3", llm="groq")
 # cfg["RPI_HOST"] == "192.168.1.10" (overridden by device profile)
 # cfg["LLM_MODEL"] == "groq/llama-3.3-70b-versatile"
+
+# App-specific defaults
+from getv.app_defaults import AppDefaults
+defaults = AppDefaults("myapp")
+defaults.set("llm", "groq").set("devices", "rpi3")
+# Later: cfg = pm.merge_profiles(base, **defaults.as_profile_kwargs())
 ```
 
 ### CLI
@@ -118,6 +125,26 @@ getv decrypt devices rpi3
 
 # Delete a profile
 getv delete devices old-rpi
+
+# Execute commands with profile environment
+getv exec llm groq -- python my_script.py
+getv exec devices rpi3 -- ssh pi@host uname -a
+
+# SSH to devices using profile
+getv ssh rpi3                    # interactive shell
+getv ssh rpi3 "uname -a"        # run remote command
+
+# Make authenticated API calls
+getv curl groq https://api.groq.com/openai/v1/models
+getv curl openai https://api.openai.com/v1/models -X POST -d '{"model":"gpt-4"}'
+
+# Set app-specific defaults
+getv use myapp llm groq
+getv use myapp devices rpi3
+
+# Show app defaults
+getv defaults              # list all apps
+getv defaults myapp       # show myapp defaults
 ```
 
 ## Profile Directory Structure
@@ -272,6 +299,41 @@ getv exec devices rpi3 -- ansible-playbook deploy.yml
 eval $(getv export llm groq --format shell)
 ```
 
+## One-liner Examples
+
+### Popular API Tokens
+
+```bash
+# OpenAI
+export OPENAI_API_KEY=$(getv get llm openai OPENAI_API_KEY) && python my_script.py
+
+# GitHub
+git clone https://$(getv get git github GH_TOKEN)@github.com/user/repo.git
+
+# AWS
+export AWS_ACCESS_KEY_ID=$(getv get aws prod AWS_ACCESS_KEY_ID) && \
+export AWS_SECRET_ACCESS_KEY=$(getv get aws prod AWS_SECRET_ACCESS_KEY) && \
+aws s3 ls
+
+# Docker Hub
+echo $(getv get docker hub DOCKERHUB_TOKEN) | docker login --username user --password-stdin
+
+# Slack
+curl -X POST -H 'Authorization: Bearer '$(getv get chat slack SLACK_BOT_TOKEN) \
+  -H 'Content-type: application/json' --data '{"text":"Hello"}' \
+  https://slack.com/api/chat.postMessage
+
+# Multiple env vars
+eval "$(getv export llm openai --format shell)" && python my_script.py
+
+# Docker compose
+getv export app production --format env > .env && docker-compose up
+
+# Direct API calls
+getv curl openai https://api.openai.com/v1/models
+getv curl groq https://api.groq.com/openai/v1/chat/completions -X POST -d '{"model":"llama3-70b"}'
+```
+
 ## Security
 
 ### Automatic Secret Detection
@@ -376,8 +438,8 @@ pytest  # 84 tests
 
 ## License
 
-Apache License 2.0 — see [LICENSE](LICENSE).
+Apache License 2.0 - see [LICENSE](LICENSE) for details.
 
 ## Author
 
-**Tom Sapletta** — [tom@sapletta.com](mailto:tom@sapletta.com)
+Created by **Tom Sapletta** - [tom@sapletta.com](mailto:tom@sapletta.com)
