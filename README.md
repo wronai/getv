@@ -6,6 +6,11 @@
 [![Downloads](https://img.shields.io/pypi/dm/getv)](https://pypi.org/project/getv/)
 [![Tests](https://github.com/wronai/getv/workflows/Tests/badge.svg)](https://github.com/wronai/getv/actions)
 
+
+Coraz częściej pracujemy z API, zwłaszcza w kontekście LLM, tzreba ciągle podawać nowe, potem je kopiować do innych narzędzi , .env
+a co jeśli przy kopiowaniu do schowka były automatycznie zapisywane do .env z którego różne aplikacjia jak ollama, czy biblitoeki liteLLM pobeirałyby wskazany API TOKEN?
+
+
 Read, write, encrypt, and delegate environment variables across services and devices.
 
 ![img.png](img.png)
