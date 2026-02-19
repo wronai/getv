@@ -600,14 +600,30 @@ def grab_cmd(ctx: clickmd.Context, dry_run: bool, category: str,
     if not clip:
         # Check if clipboard tools are installed
         import shutil
+        import sys
         has_clipboard = any(
             shutil.which(cmd[0]) for cmd in ClipboardGrab._clipboard_commands()
         )
         if not has_clipboard:
             clickmd.echo("No clipboard tool found. Install one of:", err=True)
-            clickmd.echo("  sudo apt install xclip      # for X11", err=True)
-            clickmd.echo("  sudo apt install xsel      # alternative", err=True)
-            clickmd.echo("  sudo apt install wl-clipboard  # for Wayland", err=True)
+            if sys.platform == "darwin":
+                clickmd.echo("  brew install xclip      # macOS (via X11)", err=True)
+            elif sys.platform == "win32":
+                clickmd.echo("  pip install pyperclip   # Windows (pure Python)", err=True)
+            else:
+                # Linux - detect distro
+                if Path("/etc/fedora-release").exists():
+                    clickmd.echo("  sudo dnf install xclip     # Fedora/RHEL", err=True)
+                    clickmd.echo("  sudo dnf install xsel", err=True)
+                elif Path("/etc/arch-release").exists():
+                    clickmd.echo("  sudo pacman -S xclip       # Arch Linux", err=True)
+                    clickmd.echo("  sudo pacman -S xsel", err=True)
+                elif Path("/etc/SuSE-release").exists():
+                    clickmd.echo("  sudo zypper install xclip  # openSUSE", err=True)
+                else:
+                    clickmd.echo("  sudo apt install xclip     # Debian/Ubuntu", err=True)
+                    clickmd.echo("  sudo apt install xsel", err=True)
+                clickmd.echo("  sudo apt install wl-clipboard  # Wayland", err=True)
         else:
             clickmd.echo("Clipboard is empty. Copy an API key first.", err=True)
         raise SystemExit(1)

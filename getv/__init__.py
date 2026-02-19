@@ -14,6 +14,7 @@ __version__ = "0.2.5"
 __all__ = [
     "EnvStore",
     "ProfileManager",
+    "ProfileValidationError",
     "AppDefaults",
     "mask_value",
     "is_sensitive_key",
