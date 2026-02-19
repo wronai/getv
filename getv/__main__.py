@@ -93,7 +93,21 @@ def get(ctx: clickmd.Context, category: str, profile: str, key: str) -> None:
         raise SystemExit(1)
     value = store.get(key)
     if value is None:
-        clickmd.echo(f"Key not found: {key}", err=True)
+        clickmd.echo(f"\033[31m❌ Key not found: {key}\033[0m", err=True)
+        
+        # Show available keys and suggestions
+        available_keys = store.keys()
+        if available_keys:
+            clickmd.echo(f"\n\033[33m💡 Available keys in {category}/{profile}:\033[0m", err=True)
+            for k in available_keys:
+                display = k if not is_sensitive_key(k) else f"{k} (sensitive)"
+                clickmd.echo(f"  • {display}", err=True)
+            clickmd.echo(f"\n\033[32m➡️  Try: getv get {category} {profile} {available_keys[0]}\033[0m", err=True)
+        else:
+            clickmd.echo(f"\n\033[33m💡 No keys found in {category}/{profile}. Add some first:\033[0m", err=True)
+            clickmd.echo("\n\033[32m➡️  Example:\033[0m", err=True)
+            clickmd.echo(f"   getv set {category} {profile} {key}=value", err=True)
+        
         raise SystemExit(1)
     clickmd.echo(value)
 
@@ -237,7 +251,21 @@ def export_cmd(ctx: clickmd.Context, category: str, profile: str, fmt: str) -> N
     pm = ProfileManager(ctx.obj["home"])
     store = pm.get(category, profile)
     if store is None:
-        clickmd.echo(f"Profile not found: {category}/{profile}", err=True)
+        clickmd.echo(f"\033[31m❌ Profile not found: {category}/{profile}\033[0m", err=True)
+        
+        # Show helpful suggestions
+        existing_profiles = pm.list_names(category)
+        
+        if existing_profiles:
+            clickmd.echo(f"\n\033[33m💡 Available {category} profiles:\033[0m", err=True)
+            for name in existing_profiles:
+                clickmd.echo(f"  • {name}", err=True)
+            clickmd.echo(f"\n\033[32m➡️  Try: getv export {category} {existing_profiles[0]} --format {fmt}\033[0m", err=True)
+        else:
+            clickmd.echo(f"\n\033[33m💡 No {category} profiles found. Create one first:\033[0m", err=True)
+            clickmd.echo("\n\033[32m➡️  Example:\033[0m", err=True)
+            clickmd.echo(f"   getv set {category} {profile} KEY=value", err=True)
+        
         raise SystemExit(1)
 
     data = store.as_dict()
@@ -273,7 +301,21 @@ def encrypt(ctx: clickmd.Context, category: str, profile: str, key_file: str) ->
     pm = ProfileManager(ctx.obj["home"])
     store = pm.get(category, profile)
     if store is None:
-        clickmd.echo(f"Profile not found: {category}/{profile}", err=True)
+        clickmd.echo(f"\033[31m❌ Profile not found: {category}/{profile}\033[0m", err=True)
+        
+        # Show helpful suggestions
+        existing_profiles = pm.list_names(category)
+        
+        if existing_profiles:
+            clickmd.echo(f"\n\033[33m💡 Available {category} profiles:\033[0m", err=True)
+            for name in existing_profiles:
+                clickmd.echo(f"  • {name}", err=True)
+            clickmd.echo(f"\n\033[32m➡️  Try: getv encrypt {category} {existing_profiles[0]}\033[0m", err=True)
+        else:
+            clickmd.echo(f"\n\033[33m💡 No {category} profiles found. Create one first:\033[0m", err=True)
+            clickmd.echo("\n\033[32m➡️  Example:\033[0m", err=True)
+            clickmd.echo(f"   getv set {category} {profile} KEY=value", err=True)
+        
         raise SystemExit(1)
 
     # Load or generate key
@@ -312,13 +354,30 @@ def decrypt(ctx: clickmd.Context, category: str, profile: str, key_file: str) ->
     pm = ProfileManager(ctx.obj["home"])
     store = pm.get(category, profile)
     if store is None:
-        clickmd.echo(f"Profile not found: {category}/{profile}", err=True)
+        clickmd.echo(f"\033[31m❌ Profile not found: {category}/{profile}\033[0m", err=True)
+        
+        # Show helpful suggestions
+        existing_profiles = pm.list_names(category)
+        
+        if existing_profiles:
+            clickmd.echo(f"\n\033[33m💡 Available {category} profiles:\033[0m", err=True)
+            for name in existing_profiles:
+                clickmd.echo(f"  • {name}", err=True)
+            clickmd.echo(f"\n\033[32m➡️  Try: getv decrypt {category} {existing_profiles[0]}\033[0m", err=True)
+        else:
+            clickmd.echo(f"\n\033[33m💡 No {category} profiles found. Create one first:\033[0m", err=True)
+            clickmd.echo("\n\033[32m➡️  Example:\033[0m", err=True)
+            clickmd.echo(f"   getv set {category} {profile} KEY=value", err=True)
+        
         raise SystemExit(1)
 
     key_path = Path(key_file) if key_file else Path(ctx.obj["home"]).expanduser() / ".fernet.key"
     key_path = key_path.expanduser().resolve()
     if not key_path.exists():
-        clickmd.echo(f"Key file not found: {key_path}", err=True)
+        clickmd.echo(f"\033[31m❌ Key file not found: {key_path}\033[0m", err=True)
+        clickmd.echo(f"\n\033[33m💡 Generate a key first:\033[0m", err=True)
+        clickmd.echo(f"\n\033[32m➡️  Try: getv encrypt {category} {profile}\033[0m", err=True)
+        clickmd.echo(f"   (This will create the key file at {key_path})", err=True)
         raise SystemExit(1)
 
     key = key_path.read_bytes().strip()
@@ -477,7 +536,25 @@ def curl_cmd(ctx: clickmd.Context, profile: str, url: str, method: str, body: st
     try:
         c = CurlEnv.from_profile("llm", profile, base_dir=ctx.obj["home"])
     except FileNotFoundError as e:
-        clickmd.echo(str(e), err=True)
+        clickmd.echo(f"\033[31m❌ {e}\033[0m", err=True)
+        
+        # Show helpful suggestions
+        from getv.profile import ProfileManager
+        pm = ProfileManager(ctx.obj["home"])
+        pm.add_category("llm")
+        existing_profiles = pm.list_names("llm")
+        
+        if existing_profiles:
+            clickmd.echo("\n\033[33m💡 Available LLM profiles:\033[0m", err=True)
+            for name in existing_profiles:
+                clickmd.echo(f"  • {name}", err=True)
+            clickmd.echo(f"\n\033[32m➡️  Try: getv curl {existing_profiles[0]} {url}\033[0m", err=True)
+        else:
+            clickmd.echo("\n\033[33m💡 No LLM profiles found. Create one first:\033[0m", err=True)
+            clickmd.echo("\n\033[32m➡️  Example:\033[0m", err=True)
+            clickmd.echo(f"   getv set llm {profile} LLM_MODEL=groq/llama-3.3-70b-versatile GROQ_API_KEY=gsk_your_key", err=True)
+            clickmd.echo(f"   getv curl {profile} {url}", err=True)
+        
         raise SystemExit(1)
 
     cmd = c.command(url, method=method, data=body)
