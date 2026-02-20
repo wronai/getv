@@ -1,3 +1,14 @@
+## [0.2.10] - 2026-02-20
+
+### Summary
+
+feat(getv): core module improvements
+
+### Other
+
+- update getv/__main__.py
+
+
 ## [0.2.9] - 2026-02-19
 
 ### Summary

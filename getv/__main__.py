@@ -62,7 +62,7 @@ def cli(ctx: clickmd.Context, home_dir: str) -> None:
 @cli.command()
 @clickmd.argument("category")
 @clickmd.argument("profile")
-@clickmd.argument("key")
+@clickmd.argument("key", required=False, default=None)
 @clickmd.pass_context
 def get(ctx: clickmd.Context, category: str, profile: str, key: str) -> None:
     """
@@ -70,6 +70,7 @@ def get(ctx: clickmd.Context, category: str, profile: str, key: str) -> None:
 
     ```bash
     getv get devices rpi3 RPI_HOST
+    getv get devices rpi3          # returns first key
     ```
     """
     pm = ProfileManager(ctx.obj["home"])
@@ -91,12 +92,17 @@ def get(ctx: clickmd.Context, category: str, profile: str, key: str) -> None:
             clickmd.echo(f"   getv set {category} {profile} KEY=value", err=True)
         
         raise SystemExit(1)
+    available_keys = store.keys()
+    if key is None:
+        if not available_keys:
+            clickmd.echo(f"\033[31m❌ No keys found in {category}/{profile}\033[0m", err=True)
+            raise SystemExit(1)
+        key = available_keys[0]
     value = store.get(key)
     if value is None:
         clickmd.echo(f"\033[31m❌ Key not found: {key}\033[0m", err=True)
         
         # Show available keys and suggestions
-        available_keys = store.keys()
         if available_keys:
             clickmd.echo(f"\n\033[33m💡 Available keys in {category}/{profile}:\033[0m", err=True)
             for k in available_keys:
@@ -110,6 +116,66 @@ def get(ctx: clickmd.Context, category: str, profile: str, key: str) -> None:
         
         raise SystemExit(1)
     clickmd.echo(value)
+
+
+@cli.command("clip")
+@clickmd.argument("category")
+@clickmd.argument("profile")
+@clickmd.argument("key", required=False, default=None)
+@clickmd.pass_context
+def clip_cmd(ctx: clickmd.Context, category: str, profile: str, key: str) -> None:
+    """
+    ## Copy a variable value to clipboard
+
+    ```bash
+    getv clip llm openrouter                  # copies first key
+    getv clip llm openrouter OPENROUTER_API_KEY
+    ```
+    """
+    import subprocess as sp
+    import sys
+
+    pm = ProfileManager(ctx.obj["home"])
+    store = pm.get(category, profile)
+    if store is None:
+        clickmd.echo(f"\033[31m❌ Profile not found: {category}/{profile}\033[0m", err=True)
+        raise SystemExit(1)
+    available_keys = store.keys()
+    if key is None:
+        if not available_keys:
+            clickmd.echo(f"\033[31m❌ No keys found in {category}/{profile}\033[0m", err=True)
+            raise SystemExit(1)
+        key = available_keys[0]
+    value = store.get(key)
+    if value is None:
+        clickmd.echo(f"\033[31m❌ Key not found: {key}\033[0m", err=True)
+        raise SystemExit(1)
+
+    if sys.platform == "darwin":
+        cmds = [["pbcopy"]]
+    elif sys.platform == "win32":
+        cmds = [["powershell", "-command", "Set-Clipboard"]]
+    else:
+        cmds = [
+            ["xclip", "-selection", "clipboard"],
+            ["xsel", "--clipboard", "--input"],
+            ["wl-copy"],
+        ]
+
+    copied = False
+    for cmd in cmds:
+        try:
+            sp.run(cmd, input=value, text=True, check=True, timeout=2)
+            copied = True
+            break
+        except (FileNotFoundError, sp.CalledProcessError, sp.TimeoutExpired):
+            continue
+
+    if not copied:
+        clickmd.echo("\033[31m❌ No clipboard tool found. Install xclip, xsel or wl-clipboard.\033[0m", err=True)
+        raise SystemExit(1)
+
+    clickmd.echo(f"📋 Copied {key} to clipboard", err=True)
 
 
 @cli.command("set")

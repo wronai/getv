@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "getv"
-version = "0.2.9"
+version = "0.2.10"
 description = "Universal .env variable manager — read, write, encrypt, delegate across services and devices"
 readme = "README.md"
 license = "Apache-2.0"
